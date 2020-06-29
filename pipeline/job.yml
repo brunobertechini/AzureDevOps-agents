@@ -14,11 +14,11 @@ jobs:
       JOB_REPOSITORY: $(DOCKER_HUB_USER)/${{ parameters.image }}
       JOB_DOCKER_FILE: $(Build.SourcesDirectory)/ubuntu${{ parameters.OSVersion }}-${{ job.job }}/Dockerfile
       JOB_BUILD_CONTEXT: $(Build.SourcesDirectory)/ubuntu${{ parameters.OSVersion }}-${{ job.job }}
-      JOB_BUILD_ARGS: --build-arg IMAGE=$(DOCKER_HUB_USER)/${{ parameters.image }} --build-arg TAG=${{ parameters.tag }}
       ${{ if eq(parameters.tag, 'latest') }}:
         JOB_DOCKER_TAG: ${{ job.job }}
       ${{ if ne(parameters.tag, 'latest') }}:
         JOB_DOCKER_TAG: ${{ job.job }}-${{ parameters.tag }}
+      JOB_BUILD_ARGS: --build-arg IMAGE=$(DOCKER_HUB_USER)/${{ parameters.image }} --build-arg TAG=$(JOB_DOCKER_TAG)
     steps:
     - bash: |
         echo "========================="
