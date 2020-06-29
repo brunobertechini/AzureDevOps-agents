@@ -34,7 +34,6 @@ variables:
   DockerHubPrefix: $(DOCKER_HUB_USER)
   ImageName: ${{ parameters.ImageName }}
   Tag: ${{ parameters.Tag }}
-  AppendMode: ${{ parameters.AppendMode }}
   OSVersion: ${{ parameters.OSVersion }}
   #targets: ${{ parameters.targets }}
     
