@@ -1,4 +1,7 @@
-FROM devopsubuntu18.04:latest
+ARG IMAGE
+ARG TAG
+
+FROM ${IMAGE:-devopsubuntu18.04}:${TAG:-latest}
 
 COPY scripts /scripts
 
