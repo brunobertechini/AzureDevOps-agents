@@ -26,6 +26,7 @@ parameters:
 
 trigger:
   - master
+  - feature/*
     
 resources:
 - repo: self
