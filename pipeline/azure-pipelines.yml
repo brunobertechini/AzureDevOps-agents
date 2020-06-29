@@ -18,11 +18,6 @@ parameters:
     values:
       - '16.04'
       - '18.04'
-  # - name: targets
-  #   displayName: Build Targets - Comma separated list of Targets to build
-  #   type: jobList
-  #   default: []
-    #default: 'base,python,docker,dotnet,nodejs'
 
 trigger:
   - master
@@ -31,11 +26,6 @@ trigger:
 resources:
 - repo: self
 
-variables:
-  IMAGENAME: ${{ parameters.ImageName }}
-  TAG: ${{ parameters.Tag }}
-  OSVersion: ${{ parameters.OSVersion }}
-    
 jobs:
 - template: job.yml
   parameters:
@@ -53,4 +43,9 @@ jobs:
 
       - job: python
         dependsOn: base
+
+    tag: ${{ parameters.Tag }}
+    image: ${{ parameters.ImageName }}
+    OSVersion: ${{ parameters.OSVersion }}
+
     

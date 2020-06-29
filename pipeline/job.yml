@@ -1,6 +1,8 @@
 parameters:
   jobs: []
-
+  tag: string
+  image: string
+  OSVersion: string
 
 jobs:
 - ${{ each job in parameters.jobs }}: # Each job
@@ -9,11 +11,14 @@ jobs:
         ${{ pair.key }}: ${{ pair.value }}
     variables:
       JOB_CONTAINER_REGISTRY: $(DOCKER_REGISTRY)
-      JOB_REPOSITORY: $(DOCKER_HUB_USER)/$(IMAGENAME)
-      JOB_DOCKER_FILE: $(Build.SourcesDirectory)/ubuntu$(OSVERSION)-${{ job.job }}/Dockerfile
-      JOB_BUILD_CONTEXT: $(Build.SourcesDirectory)/ubuntu$(OSVERSION)-${{ job.job }}
-      JOB_BUILD_ARGS: --build-arg IMAGE=$(DOCKER_HUB_USER)/$(IMAGENAME) --build-arg TAG=$(TAG)
-      TAG: $(TAG)
+      JOB_REPOSITORY: $(DOCKER_HUB_USER)/${{ parameters.image }}
+      JOB_DOCKER_FILE: $(Build.SourcesDirectory)/ubuntu${{ parameters.OSVersion }}-${{ job.job }}/Dockerfile
+      JOB_BUILD_CONTEXT: $(Build.SourcesDirectory)/ubuntu${{ parameters.OSVersion }}-${{ job.job }}
+      JOB_BUILD_ARGS: --build-arg IMAGE=$(DOCKER_HUB_USER)/${{ parameters.image }} --build-arg TAG=${{ parameters.tag }}
+      ${{ if eq(parameters.tag, 'latest') }}:
+        JOB_DOCKER_TAG: ${{ job.job }}
+      ${{ if ne(parameters.tag, 'latest') }}:
+        JOB_DOCKER_TAG: ${{ job.job }}-${{ parameters.tag }}
     steps:
     - bash: |
         echo "========================="
@@ -33,39 +38,40 @@ jobs:
         echo "JOB_DOCKER_FILE=$(JOB_DOCKER_FILE)"
         echo "JOB_BUILD_CONTEXT=$(JOB_BUILD_CONTEXT)"
         echo "JOB_BUILD_ARGS=$(JOB_BUILD_ARGS)"
+        echo "JOB_DOCKER_TAG=$(JOB_DOCKER_TAG)"
         echo "========================="
         echo "Environment Variables"
         echo "========================="
         set
       displayName: Debug Variables
     
-    - task: Docker@2
-      displayName: 'Docker Login'
-      inputs:
-        containerRegistry: $(DOCKER_REGISTRY)
-        command: 'login'
+    # - task: Docker@2
+    #   displayName: 'Docker Login'
+    #   inputs:
+    #     containerRegistry: $(DOCKER_REGISTRY)
+    #     command: 'login'
     
-    - task: Docker@2
-      displayName: Build image
-      inputs:
-        command: build
-        containerRegistry: $(DOCKER_REGISTRY)
-        repository: $(JOB_REPOSITORY)
-        dockerfile: '$(JOB_DOCKER_FILE)'
-        buildContext: '$(JOB_BUILD_CONTEXT)'
-        arguments: $(JOB_BUILD_ARGS)
-        ${{ if eq(variables['TAG'], 'latest') }}:
-          tags: $AGENT_JOBNAME
-        ${{ if ne(variables['TAG'], 'latest') }}:
-          tags: $AGENT_JOBNAME-$TAG
+    # - task: Docker@2
+    #   displayName: Build image
+    #   inputs:
+    #     command: build
+    #     containerRegistry: $(DOCKER_REGISTRY)
+    #     repository: $(JOB_REPOSITORY)
+    #     dockerfile: '$(JOB_DOCKER_FILE)'
+    #     buildContext: '$(JOB_BUILD_CONTEXT)'
+    #     arguments: $(JOB_BUILD_ARGS)
+    #     ${{ if eq(variables['TAG'], 'latest') }}:
+    #       tags: $AGENT_JOBNAME
+    #     ${{ if ne(variables['TAG'], 'latest') }}:
+    #       tags: $AGENT_JOBNAME-$TAG
     
-    - task: Docker@2
-      displayName: 'Push Image'
-      inputs:
-        containerRegistry: $(DOCKER_REGISTRY)
-        repository: $(JOB_REPOSITORY)
-        command: 'push'
-        ${{ if eq(variables['TAG'], 'latest') }}:
-          tags: $AGENT_JOBNAME
-        ${{ if ne(variables['TAG'], 'latest') }}:
-          tags: $AGENT_JOBNAME-$TAG
+    # - task: Docker@2
+    #   displayName: 'Push Image'
+    #   inputs:
+    #     containerRegistry: $(DOCKER_REGISTRY)
+    #     repository: $(JOB_REPOSITORY)
+    #     command: 'push'
+    #     ${{ if eq(variables['TAG'], 'latest') }}:
+    #       tags: $AGENT_JOBNAME
+    #     ${{ if ne(variables['TAG'], 'latest') }}:
+    #       tags: $AGENT_JOBNAME-$TAG
