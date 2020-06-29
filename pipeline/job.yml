@@ -14,9 +14,9 @@ jobs:
       JOB_BUILD_CONTEXT: $(Build.SourcesDirectory)/ubuntu$(OSVERSION)-${{ job.job }}
       JOB_BUILD_ARGS: --build-arg IMAGE=$(DOCKER_HUB_USER)/$(IMAGENAME) --build-arg TAG=$(TAG)
       ${{ if eq(variables['TAG'], 'latest') }}:
-        JOB_DOCKER_TAG: ${{ job.job }}
+        JOB_DOCKER_TAG: $(AGENT_JOBNAME)
       ${{ if ne(variables['TAG'], 'latest') }}:
-        JOB_DOCKER_TAG: ${{ job.job }}-$(TAG)
+        JOB_DOCKER_TAG: $(AGENT_JOBNAME)-$(TAG)
     steps:
     - bash: |
         echo "========================="
