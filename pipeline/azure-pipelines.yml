@@ -42,13 +42,9 @@ jobs:
   parameters:
     jobs:
       - job: base
-        steps:
-        - script: echo This will get sandwiched between SetupMyBuildTools and PublishMyTelemetry.
 
       - job: docker
         dependsOn: base
-        steps:
-        - script: echo So will this!
 
       - job: dotnet
         dependsOn: base
