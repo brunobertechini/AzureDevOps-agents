@@ -32,11 +32,9 @@ resources:
 - repo: self
 
 variables:
-  DockerHubPrefix: $(DOCKER_HUB_USER)
-  ImageName: ${{ parameters.ImageName }}
-  Tag: ${{ parameters.Tag }}
+  IMAGENAME: ${{ parameters.ImageName }}
+  TAG: ${{ parameters.Tag }}
   OSVersion: ${{ parameters.OSVersion }}
-  #targets: ${{ parameters.targets }}
     
 jobs:
 - template: job.yml

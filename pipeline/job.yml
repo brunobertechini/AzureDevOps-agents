@@ -13,10 +13,6 @@ jobs:
       JOB_DOCKER_FILE: $(Build.SourcesDirectory)/ubuntu$(OSVERSION)-${{ job.job }}/Dockerfile
       JOB_BUILD_CONTEXT: $(Build.SourcesDirectory)/ubuntu$(OSVERSION)-${{ job.job }}
       JOB_BUILD_ARGS: --build-arg IMAGE=$(DOCKER_HUB_USER)/$(IMAGENAME) --build-arg TAG=$(TAG)
-      ${{ if eq(variables['TAG'], 'latest') }}:
-        JOB_DOCKER_TAG: $(AGENT_JOBNAME)
-      ${{ if ne(variables['TAG'], 'latest') }}:
-        JOB_DOCKER_TAG: $(AGENT_JOBNAME)-$(TAG)
     steps:
     - bash: |
         echo "========================="
@@ -43,27 +39,33 @@ jobs:
         set
       displayName: Debug Variables
     
-    # - task: Docker@2
-    #   displayName: 'Docker Login'
-    #   inputs:
-    #     containerRegistry: $(DOCKER_REGISTRY)
-    #     command: 'login'
+    - task: Docker@2
+      displayName: 'Docker Login'
+      inputs:
+        containerRegistry: $(DOCKER_REGISTRY)
+        command: 'login'
     
-    # - task: Docker@2
-    #   displayName: Build image
-    #   inputs:
-    #     command: build
-    #     containerRegistry: $(DOCKER_REGISTRY)
-    #     repository: $(JOB_REPOSITORY)
-    #     dockerfile: '$(JOB_DOCKER_FILE)'
-    #     buildContext: '$(JOB_BUILD_CONTEXT)'
-    #     arguments: $(JOB_BUILD_ARGS)
-    #     tags: $(JOB_DOCKER_TAG)
+    - task: Docker@2
+      displayName: Build image
+      inputs:
+        command: build
+        containerRegistry: $(DOCKER_REGISTRY)
+        repository: $(JOB_REPOSITORY)
+        dockerfile: '$(JOB_DOCKER_FILE)'
+        buildContext: '$(JOB_BUILD_CONTEXT)'
+        arguments: $(JOB_BUILD_ARGS)
+        ${{ if eq(variables['TAG'], 'latest') }}:
+          tags: $(AGENT_JOBNAME)
+        ${{ if ne(variables['TAG'], 'latest') }}:
+          tags: $(AGENT_JOBNAME)-$(TAG)
     
-    # - task: Docker@2
-    #   displayName: 'Push Image'
-    #   inputs:
-    #     containerRegistry: $(DOCKER_REGISTRY)
-    #     repository: $(JOB_REPOSITORY)
-    #     command: 'push'
-    #     tags: $(JOB_DOCKER_TAG)
+    - task: Docker@2
+      displayName: 'Push Image'
+      inputs:
+        containerRegistry: $(DOCKER_REGISTRY)
+        repository: $(JOB_REPOSITORY)
+        command: 'push'
+        ${{ if eq(variables['TAG'], 'latest') }}:
+          tags: $(AGENT_JOBNAME)
+        ${{ if ne(variables['TAG'], 'latest') }}:
+          tags: $(AGENT_JOBNAME)-$(TAG)
