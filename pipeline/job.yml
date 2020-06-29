@@ -1,0 +1,31 @@
+parameters:
+  jobs: []
+  
+jobs:
+- ${{ each job in parameters.jobs }}: # Each job
+  - ${{ each pair in job }}:          # Insert all properties other than "steps"
+      ${{ if ne(pair.key, 'steps') }}:
+        ${{ pair.key }}: ${{ pair.value }}
+    steps:
+    - task: Docker@2
+      displayName: 'Docker Login'
+      inputs:
+        containerRegistry: $(DOCKER_REGISTRY)
+        command: 'login'
+    
+    - task: Docker@2
+      displayName: Build image
+      inputs:
+        command: build
+        containerRegistry: $(DOCKER_REGISTRY)
+        repository: $(DockerHubPrefix)/$(ImageName)
+        dockerfile: '$(Build.SourcesDirectory)/ubuntu-$(OSVersion)-${{ job.job }}/Dockerfile'
+        buildContext: '$(Build.SourcesDirectory)/ubuntu-$(OSVersion)-${{ job.job }}'
+        arguments: --build-arg IMAGE=$ImageName --build-arg TAG=$(tag)
+        tags: |
+          $(tag)
+    
+    # - ${{ job.steps }}     
+               
+    # - task: PublishMyTelemetry@1
+    #   condition: always()

@@ -1,0 +1,65 @@
+# Docker
+# Build a Docker image 
+# https://docs.microsoft.com/azure/devops/pipelines/languages/docker
+
+parameters:
+  - name: ImageName
+    displayName: Docker Image name
+    type: string
+    default: 'devopsubuntu'
+  - name: Tag
+    displayName: Docker Tag to be used.
+    type: string
+    default: 'latest'
+  - name: AppendMode
+    displayName: Append Mode - tag or image.
+    type: string
+    default: 'image'
+  - name: OSVersion
+    displayName: Ubuntu OS Version to be used.
+    type: string
+    default: '18.04'
+    values:
+      - '16.04'
+      - '18.04'
+  - name: targets
+    displayName: Build Targets - Comma separated list of Targets to build
+    type: jobList
+    default: []
+    #default: 'base,python,docker,dotnet,nodejs'
+
+trigger:
+  - master
+    
+resources:
+- repo: self
+
+variables:
+  DockerHubPrefix: $(DOCKER_HUB_USER)
+  ImageName: ${{ parameters.ImageName }}
+  Tag: ${{ parameters.Tag }}
+  AppendMode: ${{ parameters.AppendMode }}
+  OSVersion: ${{ parameters.OSVersion }}
+  targets: ${{ parameters.targets }}
+    
+jobs:
+  - template: job.yml
+  parameters:
+    jobs:
+      - job: base
+        steps:
+        - script: echo This will get sandwiched between SetupMyBuildTools and PublishMyTelemetry.
+
+      - job: docker
+        steps:
+        - script: echo So will this!
+
+      - job: dotnet
+        dependsOn: base
+
+      - job: nodejs
+        dependsOn: base
+
+      - job: python
+        dependsOn: base
+    
