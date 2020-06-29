@@ -12,12 +12,12 @@ parameters:
     type: string
     default: 'latest'
   - name: OSVersion
-    displayName: Ubuntu OS Version to be used.
+    displayName: OS Version to be used
     type: string
-    default: '18.04'
+    default: 'ubuntu18.04'
     values:
-      - '16.04'
-      - '18.04'
+      - 'ubuntu16.04'
+      - 'ubuntu18.04'
 
 trigger:
   - master

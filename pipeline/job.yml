@@ -12,8 +12,8 @@ jobs:
     variables:
       JOB_CONTAINER_REGISTRY: $(DOCKER_REGISTRY)
       JOB_REPOSITORY: $(DOCKER_HUB_USER)/${{ parameters.image }}
-      JOB_DOCKER_FILE: $(Build.SourcesDirectory)/ubuntu${{ parameters.OSVersion }}-${{ job.job }}/Dockerfile
-      JOB_BUILD_CONTEXT: $(Build.SourcesDirectory)/ubuntu${{ parameters.OSVersion }}-${{ job.job }}
+      JOB_DOCKER_FILE: $(Build.SourcesDirectory)/${{ parameters.OSVersion }}-${{ job.job }}/Dockerfile
+      JOB_BUILD_CONTEXT: $(Build.SourcesDirectory)/${{ parameters.OSVersion }}-${{ job.job }}
       ${{ if eq(parameters.tag, 'latest') }}:
         JOB_DOCKER_TAG: ${{ job.job }}
       ${{ if ne(parameters.tag, 'latest') }}:
