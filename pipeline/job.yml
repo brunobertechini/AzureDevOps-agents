@@ -26,44 +26,44 @@ jobs:
         echo "DOCKER_HUB_USER=$(DOCKER_HUB_USER)"
         echo "IMAGENAME=$(IMAGENAME)"
         echo "TAG=$(TAG)"
-        echo "DOCKER_TAG=$(DOCKER_TAG)"
         echo "OSVERSION=$(OSVERSION)"
         echo "${{ job.job }}-$(TAG)"
         echo "========================="
         echo "Job Variables: "
         echo "========================="
-        echo "JOB_DOCKER_TAG=$(JOB_DOCKER_TAG)"
         echo "JOB_CONTAINER_REGISTRY=$(JOB_CONTAINER_REGISTRY)"
         echo "JOB_REPOSITORY=$(JOB_REPOSITORY)"
         echo "JOB_DOCKER_FILE=$(JOB_DOCKER_FILE)"
         echo "JOB_BUILD_CONTEXT=$(JOB_BUILD_CONTEXT)"
         echo "JOB_BUILD_ARGS=$(JOB_BUILD_ARGS)"
+        echo "JOB_DOCKER_TAG=$(JOB_DOCKER_TAG)"
         echo "========================="
         echo "Environment Variables"
         echo "========================="
         set
       displayName: Debug Variables
-    - task: Docker@2
-      displayName: 'Docker Login'
-      inputs:
-        containerRegistry: $(DOCKER_REGISTRY)
-        command: 'login'
     
-    - task: Docker@2
-      displayName: Build image
-      inputs:
-        command: build
-        containerRegistry: $(DOCKER_REGISTRY)
-        repository: $(JOB_REPOSITORY)
-        dockerfile: '$(JOB_DOCKER_FILE)'
-        buildContext: '$(JOB_BUILD_CONTEXT)'
-        arguments: $(JOB_BUILD_ARGS)
-        tags: $(JOB_DOCKER_TAG)
+    # - task: Docker@2
+    #   displayName: 'Docker Login'
+    #   inputs:
+    #     containerRegistry: $(DOCKER_REGISTRY)
+    #     command: 'login'
     
-    - task: Docker@2
-      displayName: 'Push Image'
-      inputs:
-        containerRegistry: $(DOCKER_REGISTRY)
-        repository: $(JOB_REPOSITORY)
-        command: 'push'
-        tags: $(JOB_DOCKER_TAG)
+    # - task: Docker@2
+    #   displayName: Build image
+    #   inputs:
+    #     command: build
+    #     containerRegistry: $(DOCKER_REGISTRY)
+    #     repository: $(JOB_REPOSITORY)
+    #     dockerfile: '$(JOB_DOCKER_FILE)'
+    #     buildContext: '$(JOB_BUILD_CONTEXT)'
+    #     arguments: $(JOB_BUILD_ARGS)
+    #     tags: $(JOB_DOCKER_TAG)
+    
+    # - task: Docker@2
+    #   displayName: 'Push Image'
+    #   inputs:
+    #     containerRegistry: $(DOCKER_REGISTRY)
+    #     repository: $(JOB_REPOSITORY)
+    #     command: 'push'
+    #     tags: $(JOB_DOCKER_TAG)
