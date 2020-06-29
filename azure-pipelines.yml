@@ -6,7 +6,7 @@ parameters:
   - name: DockerHubPrefix
     displayName: Docker Hub Username or Prefix
     type: string
-    default: ${{ DOCKER_HUB_USER }}
+    default: $(DOCKER_HUB_USER)
   - name: ImageName
     displayName: Docker Image name
     type: string
