@@ -1,20 +1,27 @@
 parameters:
   jobs: []
 
-variables:
-  ${{ if eq(variables['TAG'], 'latest') }}:
-    DOCKER_TAG: ${{ job.job }}
-  ${{ if ne(variables['TAG'], 'latest') }}:
-    DOCKER_TAG: ${{ job.job }}-$(TAG)
 
 jobs:
 - ${{ each job in parameters.jobs }}: # Each job
   - ${{ each pair in job }}:          # Insert all properties other than "steps"
       ${{ if ne(pair.key, 'steps') }}:
         ${{ pair.key }}: ${{ pair.value }}
+    variables:
+      JOB_CONTAINER_REGISTRY: $(DOCKER_REGISTRY)
+      JOB_REPOSITORY: $(DOCKER_HUB_USER)/$(IMAGENAME)
+      JOB_DOCKER_FILE: $(Build.SourcesDirectory)/ubuntu$(OSVERSION)-${{ job.job }}/Dockerfile
+      JOB_BUILD_CONTEXT: $(Build.SourcesDirectory)/ubuntu$(OSVERSION)-${{ job.job }}
+      JOB_BUILD_ARGS: --build-arg IMAGE=$(DOCKER_HUB_USER)/$(IMAGENAME) --build-arg TAG=$(TAG)
+      ${{ if eq(variables['TAG'], 'latest') }}:
+        JOB_DOCKER_TAG: ${{ job.job }}
+      ${{ if ne(variables['TAG'], 'latest') }}:
+        JOB_DOCKER_TAG: ${{ job.job }}-$(TAG)
     steps:
     - bash: |
+        echo "========================="
         echo "Pipeline Variables:"
+        echo "========================="
         echo "DOCKER_REGISTRY=$(DOCKER_REGISTRY)"
         echo "DOCKER_HUB_USER=$(DOCKER_HUB_USER)"
         echo "IMAGENAME=$(IMAGENAME)"
@@ -22,30 +29,41 @@ jobs:
         echo "DOCKER_TAG=$(DOCKER_TAG)"
         echo "OSVERSION=$(OSVERSION)"
         echo "${{ job.job }}-$(TAG)"
-        echo ""
+        echo "========================="
+        echo "Job Variables: "
+        echo "========================="
+        echo "JOB_DOCKER_TAG=$(JOB_DOCKER_TAG)"
+        echo "JOB_CONTAINER_REGISTRY=$(JOB_CONTAINER_REGISTRY)"
+        echo "JOB_REPOSITORY=$(JOB_REPOSITORY)"
+        echo "JOB_DOCKER_FILE=$(JOB_DOCKER_FILE)"
+        echo "JOB_BUILD_CONTEXT=$(JOB_BUILD_CONTEXT)"
+        echo "JOB_BUILD_ARGS=$(JOB_BUILD_ARGS)"
+        echo "========================="
+        echo "Environment Variables"
+        echo "========================="
         set
       displayName: Debug Variables
     - task: Docker@2
       displayName: 'Docker Login'
       inputs:
-        containerRegistry: $(DOCKER_REGISTRY)
+        containerRegistry: $(JOB_CONTAINER_REGISTRY)
         command: 'login'
     
     - task: Docker@2
       displayName: Build image
       inputs:
         command: build
-        containerRegistry: $(DOCKER_REGISTRY)
-        repository: $(DOCKER_HUB_USER)/$(IMAGENAME)
-        dockerfile: '$(Build.SourcesDirectory)/ubuntu$(OSVERSION)-${{ job.job }}/Dockerfile'
-        buildContext: '$(Build.SourcesDirectory)/ubuntu$(OSVERSION)-${{ job.job }}'
-        arguments: --build-arg IMAGE=$(DOCKER_HUB_USER)/$(IMAGENAME) --build-arg TAG=$(TAG)
-        tags: $(DOCKER_TAG)
+        containerRegistry: $(JOB_CONTAINER_REGISTRY)
+        repository: $(JOB_REPOSITORY)
+        dockerfile: '$(JOB_DOCKER_FILE)'
+        buildContext: '$(JOB_BUILD_CONTEXT)'
+        arguments: $(JOB_BUILD_ARGS)
+        tags: $(JOB_DOCKER_TAG)
     
     - task: Docker@2
       displayName: 'Push Image'
       inputs:
         containerRegistry: $(DOCKER_REGISTRY)
-        repository: $(DOCKER_HUB_USER)/$(IMAGENAME)
+        repository: $(JOB_REPOSITORY)
         command: 'push'
-        tags: $(DOCKER_TAG)
+        tags: $(JOB_DOCKER_TAG)
