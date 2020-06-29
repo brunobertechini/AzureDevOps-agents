@@ -46,8 +46,8 @@ stages:
     displayName: Build image
     jobs:  
     - ${{ each target in parameters.targets }}:
-      - job: build-${{ target }} 
-        displayName: Build ${{ target }}
+      - job: ${{ target }} 
+        displayName: ${{ target }}
         pool:
           vmImage: 'ubuntu-latest'
         steps:
