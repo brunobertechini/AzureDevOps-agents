@@ -11,23 +11,32 @@ jobs:
         echo "Pipeline Variables:"
         set
       displayName: Debug Variables
-    # - task: Docker@2
-    #   displayName: 'Docker Login'
-    #   inputs:
-    #     containerRegistry: $(DOCKER_REGISTRY)
-    #     command: 'login'
+    - task: Docker@2
+      displayName: 'Docker Login'
+      inputs:
+        containerRegistry: $(DOCKER_REGISTRY)
+        command: 'login'
     
-    # - task: Docker@2
-    #   displayName: Build image
-    #   inputs:
-    #     command: build
-    #     containerRegistry: $(DOCKER_REGISTRY)
-    #     repository: $(DockerHubPrefix)/$(ImageName)
-    #     dockerfile: '$(Build.SourcesDirectory)/ubuntu$(OSVersion)-${{ job.job }}/Dockerfile'
-    #     buildContext: '$(Build.SourcesDirectory)/ubuntu$(OSVersion)-${{ job.job }}'
-    #     arguments: --build-arg IMAGE=$ImageName --build-arg TAG=$(tag)
-    #     tags: |
-    #       $(tag)
+    - task: Docker@2
+      displayName: Build image
+      inputs:
+        command: build
+        containerRegistry: $(DOCKER_REGISTRY)
+        repository: $(DOCKER_HUB_USER)/$(IMAGENAME)
+        dockerfile: '$(Build.SourcesDirectory)/ubuntu$(OSVERSION)-${{ job.job }}/Dockerfile'
+        buildContext: '$(Build.SourcesDirectory)/ubuntu$(OSVERSION)-${{ job.job }}'
+        arguments: --build-arg IMAGE=$IMAGENAME --build-arg TAG=$(TAG)
+        tags: |
+          $(TAG)
+    
+    - task: Docker@2
+      displayName: 'Push Image'
+      inputs:
+        containerRegistry: $(DOCKER_REGISTRY)
+        repository: $(DOCKER_HUB_USER)/$(IMAGENAME)
+        command: 'push'
+        tags: |
+          $(TAG)
     
     # - ${{ job.steps }}     
                
