@@ -4,17 +4,13 @@
 
 parameters:
   - name: ImageName
-    displayName: Docker Image name
+    displayName: Docker Image Name
     type: string
-    default: 'devopsubuntu'
+    default: 'azure-devops-agent'
   - name: Tag
-    displayName: Docker Tag to be used.
+    displayName: Docker Tag
     type: string
     default: 'latest'
-  - name: AppendMode
-    displayName: Append Mode - tag or image.
-    type: string
-    default: 'image'
   - name: OSVersion
     displayName: Ubuntu OS Version to be used.
     type: string

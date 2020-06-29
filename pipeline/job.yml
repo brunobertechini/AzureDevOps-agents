@@ -20,7 +20,7 @@ jobs:
         containerRegistry: $(DOCKER_REGISTRY)
         repository: $(DockerHubPrefix)/$(ImageName)
         dockerfile: '$(Build.SourcesDirectory)/ubuntu$(OSVersion)-${{ job.job }}/Dockerfile'
-        buildContext: '$(Build.SourcesDirectory)/ubuntu-$(OSVersion)-${{ job.job }}'
+        buildContext: '$(Build.SourcesDirectory)/ubuntu$(OSVersion)-${{ job.job }}'
         arguments: --build-arg IMAGE=$ImageName --build-arg TAG=$(tag)
         tags: |
           $(tag)
