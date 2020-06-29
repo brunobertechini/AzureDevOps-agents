@@ -45,9 +45,8 @@ stages:
   - stage: Build
     displayName: Build image
     jobs:  
-    - ${{ each target in parameters.targets }}:
-      - job: ${{ target }} 
-        displayName: ${{ target }}
+      - job: Build 
+        displayName: Build
         pool:
           vmImage: 'ubuntu-latest'
         steps:
@@ -61,7 +60,11 @@ stages:
               echo "targets=$(targets)"
               set
             displayName: 'Debug Variables'
-      # - task: Docker@2
+          - ${{ each target in parameters.targets }}:
+            - bash: |
+                echo "Running ${{ target }}"
+              displayName: ${{ target }}
+    # - task: Docker@2
       #   displayName: Build image
       #   inputs:
       #     command: build
