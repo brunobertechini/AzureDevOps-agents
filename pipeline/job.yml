@@ -46,14 +46,14 @@ jobs:
     - task: Docker@2
       displayName: 'Docker Login'
       inputs:
-        containerRegistry: $(JOB_CONTAINER_REGISTRY)
+        containerRegistry: $(DOCKER_REGISTRY)
         command: 'login'
     
     - task: Docker@2
       displayName: Build image
       inputs:
         command: build
-        containerRegistry: $(JOB_CONTAINER_REGISTRY)
+        containerRegistry: $(DOCKER_REGISTRY)
         repository: $(JOB_REPOSITORY)
         dockerfile: '$(JOB_DOCKER_FILE)'
         buildContext: '$(JOB_BUILD_CONTEXT)'
