@@ -34,7 +34,7 @@ resources:
 - repo: self
 
 variables:
-  DockerHubPrefix: ${{ DOCKER_HUB_USER }}
+  DockerHubPrefix: $(DOCKER_HUB_USER)
   ImageName: ${{ parameters.ImageName }}
   Tag: ${{ parameters.Tag }}
   AppendMode: ${{ parameters.AppendMode }}
