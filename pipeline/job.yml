@@ -9,6 +9,13 @@ jobs:
     steps:
     - bash: |
         echo "Pipeline Variables:"
+        echo "DOCKER_REGISTRY=$(DOCKER_REGISTRY)"
+        echo "DOCKER_HUB_USER=$(DOCKER_HUB_USER)"
+        echo "IMAGENAME=$(IMAGENAME)"
+        echo "TAG=$(TAG)"
+        echo ""
+        echo ""
+        echo ""
         set
       displayName: Debug Variables
     - task: Docker@2
@@ -25,9 +32,9 @@ jobs:
         repository: $(DOCKER_HUB_USER)/$(IMAGENAME)
         dockerfile: '$(Build.SourcesDirectory)/ubuntu$(OSVERSION)-${{ job.job }}/Dockerfile'
         buildContext: '$(Build.SourcesDirectory)/ubuntu$(OSVERSION)-${{ job.job }}'
-        arguments: --build-arg IMAGE=$IMAGENAME --build-arg TAG=$(TAG)
+        arguments: --build-arg IMAGE=$(IMAGENAME) --build-arg TAG=$(TAG)
         tags: |
-          $(TAG)
+          ${{ job.job }}-$(TAG)
     
     - task: Docker@2
       displayName: 'Push Image'
@@ -36,9 +43,4 @@ jobs:
         repository: $(DOCKER_HUB_USER)/$(IMAGENAME)
         command: 'push'
         tags: |
-          $(TAG)
-    
-    # - ${{ job.steps }}     
-               
-    # - task: PublishMyTelemetry@1
-    #   condition: always()
+          ${{ job.job }}-$(TAG)
