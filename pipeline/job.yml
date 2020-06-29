@@ -8,7 +8,7 @@ jobs:
       ${{ if ne(pair.key, 'steps') }}:
         ${{ pair.key }}: ${{ pair.value }}
     variables:
-      JOB_CONTAINER_REGISTRY: ${{ DOCKER_REGISTRY }}
+      JOB_CONTAINER_REGISTRY: $(DOCKER_REGISTRY)
       JOB_REPOSITORY: $(DOCKER_HUB_USER)/$(IMAGENAME)
       JOB_DOCKER_FILE: $(Build.SourcesDirectory)/ubuntu$(OSVERSION)-${{ job.job }}/Dockerfile
       JOB_BUILD_CONTEXT: $(Build.SourcesDirectory)/ubuntu$(OSVERSION)-${{ job.job }}
