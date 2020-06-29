@@ -43,7 +43,7 @@ variables:
   targets: ${{ parameters.targets }}
     
 jobs:
-  - template: job.yml
+- template: job.yml
   parameters:
     jobs:
       - job: base
