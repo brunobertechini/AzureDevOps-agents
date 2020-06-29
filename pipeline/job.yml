@@ -7,6 +7,10 @@ jobs:
       ${{ if ne(pair.key, 'steps') }}:
         ${{ pair.key }}: ${{ pair.value }}
     steps:
+    - bash: |
+        echo "Pipeline Variables:"
+        set
+      displayName: Debug Variables
     - task: Docker@2
       displayName: 'Docker Login'
       inputs:
