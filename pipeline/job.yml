@@ -1,6 +1,12 @@
 parameters:
   jobs: []
-  
+
+variables:
+  ${{ if eq(variables['TAG'], 'latest') }}:
+    DOCKER_TAG: ${{ job.job }}
+  ${{ if ne(variables['TAG'], 'latest') }}:
+    DOCKER_TAG: ${{ job.job }}-$(TAG)
+
 jobs:
 - ${{ each job in parameters.jobs }}: # Each job
   - ${{ each pair in job }}:          # Insert all properties other than "steps"
@@ -13,6 +19,7 @@ jobs:
         echo "DOCKER_HUB_USER=$(DOCKER_HUB_USER)"
         echo "IMAGENAME=$(IMAGENAME)"
         echo "TAG=$(TAG)"
+        echo "DOCKER_TAG=$(DOCKER_TAG)"
         echo "OSVERSION=$(OSVERSION)"
         echo "${{ job.job }}-$(TAG)"
         echo ""
@@ -33,8 +40,7 @@ jobs:
         dockerfile: '$(Build.SourcesDirectory)/ubuntu$(OSVERSION)-${{ job.job }}/Dockerfile'
         buildContext: '$(Build.SourcesDirectory)/ubuntu$(OSVERSION)-${{ job.job }}'
         arguments: --build-arg IMAGE=$(DOCKER_HUB_USER)/$(IMAGENAME) --build-arg TAG=$(TAG)
-        tags: |
-          ${{ job.job }}-$(TAG)
+        tags: $(DOCKER_TAG)
     
     - task: Docker@2
       displayName: 'Push Image'
@@ -42,5 +48,4 @@ jobs:
         containerRegistry: $(DOCKER_REGISTRY)
         repository: $(DOCKER_HUB_USER)/$(IMAGENAME)
         command: 'push'
-        tags: |
-          ${{ job.job }}-$(TAG)
+        tags: $(DOCKER_TAG)
