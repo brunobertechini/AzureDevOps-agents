@@ -13,8 +13,8 @@ jobs:
         echo "DOCKER_HUB_USER=$(DOCKER_HUB_USER)"
         echo "IMAGENAME=$(IMAGENAME)"
         echo "TAG=$(TAG)"
-        echo ""
-        echo ""
+        echo "OSVERSION=$(OSVERSION)"
+        echo "${{ job.job }}-$(TAG)"
         echo ""
         set
       displayName: Debug Variables
@@ -32,7 +32,7 @@ jobs:
         repository: $(DOCKER_HUB_USER)/$(IMAGENAME)
         dockerfile: '$(Build.SourcesDirectory)/ubuntu$(OSVERSION)-${{ job.job }}/Dockerfile'
         buildContext: '$(Build.SourcesDirectory)/ubuntu$(OSVERSION)-${{ job.job }}'
-        arguments: --build-arg IMAGE=$(IMAGENAME) --build-arg TAG=$(TAG)
+        arguments: --build-arg IMAGE=$(DOCKER_HUB_USER)/$(IMAGENAME) --build-arg TAG=$(TAG)
         tags: |
           ${{ job.job }}-$(TAG)
     
