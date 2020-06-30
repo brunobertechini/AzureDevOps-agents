@@ -38,12 +38,10 @@ RUN /scripts/base/preparemetadata.sh && \
     #/scripts/installers/azure-devops-cli.sh
 
 # Docker in Docker (dind)
-COPY scripts/docker /scripts/docker
-RUN chmod +x /scripts/docker/*
 RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
 RUN add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
 RUN apt-get update && apt-get install docker-ce
-RUN /scripts/docker/docker-compose.sh
+RUN /scripts/installers/docker-compose.sh
 
 # Dotnet
 RUN /scripts/installers/mspackages.sh && \
