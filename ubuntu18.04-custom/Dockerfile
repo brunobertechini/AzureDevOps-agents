@@ -10,6 +10,7 @@ RUN echo "APT::Get::Assume-Yes \"true\";" > /etc/apt/apt.conf.d/90assumeyes && \
     touch /image/metadata.txt
 
 COPY scripts /scripts
+RUN chmod +x /scripts/base/* && chmod +x /scripts/helpers/* && chmod +x /scripts/installers/*
 
 RUN apt-get update && \
     apt-get install \
