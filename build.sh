@@ -100,7 +100,7 @@ do
     if [[ $DryRun -eq 0 ]]; then
       cd ubuntu$VERSION-$target
       pwd
-      docker build -t $IMG . --build-arg IMAGE=$IMG --build-arg TAG=$TAG
+      docker build -t $IMG . --build-arg FROM_IMAGE=$IMG --build-arg FROM_IMAGE_TAG=$TAG
       cd ..
     fi
 

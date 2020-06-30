@@ -1,7 +1,7 @@
-ARG IMAGE
-ARG TAG
+ARG FROM_IMAGE
+ARG FROM_IMAGE_TAG
 
-FROM ${IMAGE:-devopsubuntu18.04}:${TAG:-latest}
+FROM ${FROM_IMAGE:-devopsubuntu18.04}:${FROM_IMAGE_TAG:-latest}
 
 COPY scripts /scripts
 
