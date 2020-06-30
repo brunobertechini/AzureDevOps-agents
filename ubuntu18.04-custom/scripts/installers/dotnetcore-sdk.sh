@@ -27,7 +27,7 @@ mksamples()
 
 set -e
 
-apt-get install dotnet-sdk-2.1=2.1.301-1
+#apt-get install dotnet-sdk-2.1=2.1.301-1
 apt-get install dotnet-sdk-2.2
 apt-get install dotnet-sdk-3.0  
 apt-get install dotnet-sdk-3.1
@@ -39,22 +39,22 @@ apt-get install dotnet-sdk-3.1
 # releases=$(curl "${release_url}")
 # sdks=$(echo "${releases}" | grep version-sdk | grep -v preview | grep -v rc | grep -v display | cut -d\" -f4 | sort -u | grep '^2')
 
-sdks=(2.1.100 2.1.4 2.1.503 2.1.801 2.2.100 2.2.105 2.2.401)
+# sdks=(2.1.100 2.1.4 2.1.503 2.1.801 2.2.100 2.2.105 2.2.401)
 
-for sdk in $sdks; do
-    # Glob matches dotnet-dev-1.x or dotnet-sdk-2.y
-    if ! apt-get install -y --no-install-recommends "dotnet-*-$sdk"; then
-        # Install manually if not in package repo
-        if [[ "$sdk" =~ ^1.*$ ]]; then
-            # https://dotnet.microsoft.com/download/linux-package-manager/rhel/sdk-2.2.401
-            url="https://dotnetcli.blob.core.windows.net/dotnet/Sdk/$sdk/dotnet-dev-ubuntu.16.04-x64.$sdk.tar.gz"
-        else
-            url="https://dotnetcli.blob.core.windows.net/dotnet/Sdk/$sdk/dotnet-sdk-$sdk-linux-x64.tar.gz"
-        fi
-        echo "$url" >> urls
-        echo "Adding $url to list to download later"
-    fi
-done
+# for sdk in $sdks; do
+#     # Glob matches dotnet-dev-1.x or dotnet-sdk-2.y
+#     if ! apt-get install -y --no-install-recommends "dotnet-*-$sdk"; then
+#         # Install manually if not in package repo
+#         if [[ "$sdk" =~ ^1.*$ ]]; then
+#             # https://dotnet.microsoft.com/download/linux-package-manager/rhel/sdk-2.2.401
+#             url="https://dotnetcli.blob.core.windows.net/dotnet/Sdk/$sdk/dotnet-dev-ubuntu.16.04-x64.$sdk.tar.gz"
+#         else
+#             url="https://dotnetcli.blob.core.windows.net/dotnet/Sdk/$sdk/dotnet-sdk-$sdk-linux-x64.tar.gz"
+#         fi
+#         echo "$url" >> urls
+#         echo "Adding $url to list to download later"
+#     fi
+# done
 
 # Download additional SDKs
 if test -f "urls"; then

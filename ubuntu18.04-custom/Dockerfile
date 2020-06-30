@@ -27,25 +27,26 @@ RUN /scripts/base/preparemetadata.sh && \
     /scripts/installers/basic.sh && \
     /scripts/base/repos.sh && \
     /scripts/helpers/apt.sh && \
-    /scripts/installers/7-zip.sh && \
-    /scripts/installers/azcopy.sh && \
-    /scripts/installers/gcc.sh && \
-    /scripts/installers/clang.sh && \
-    /scripts/installers/cmake.sh && \
-    /scripts/installers/build-essential.sh && \
-    /scripts/installers/azure-cli.sh && \
-    /scripts/installers/azure-devops-cli.sh
+    /scripts/installers/7-zip.sh
+    #/scripts/installers/azcopy.sh && \
+    #/scripts/installers/gcc.sh && \
+    #/scripts/installers/clang.sh && \
+    #/scripts/installers/cmake.sh && \
+    #/scripts/installers/build-essential.sh && \
+    #/scripts/installers/azure-cli.sh && \
+    #/scripts/installers/azure-devops-cli.sh
 
-# Commands from Docker Image
-RUN /scripts/installers/docker-moby.sh && \
-    /scripts/installers/docker-compose.sh && \
-    /scripts/installers/kubernetes-tools.sh
+# Docker in Docker (dind)
+COPY scripts/docker /scripts/docker
+RUN chmod +x /scripts/docker/*
+RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+RUN add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+RUN apt-get update && apt-get install docker-ce
+RUN /scripts/docker/docker-compose.sh
 
-# Commands from Dotnet
+# Dotnet
 RUN /scripts/installers/mspackages.sh && \
-    /scripts/installers/dotnetcore-sdk.sh && \
-    /scripts/installers/powershellcore.sh && \
-    /scripts/installers/azpowershell.sh
+    /scripts/installers/dotnetcore-sdk.sh
 
 WORKDIR /azp
 

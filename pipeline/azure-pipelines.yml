@@ -32,6 +32,8 @@ jobs:
     jobs:
       - job: base
 
+      - job: custom
+
       - job: docker
         dependsOn: base
 
