@@ -47,6 +47,9 @@ RUN /scripts/installers/docker-compose.sh
 RUN /scripts/installers/mspackages.sh && \
     /scripts/installers/dotnetcore-sdk.sh
 
+# Chrome
+RUN /scripts/installers/google-chrome.sh
+
 WORKDIR /azp
 
 COPY ./start.sh .
