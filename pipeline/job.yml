@@ -18,10 +18,10 @@ jobs:
         JOB_DOCKER_TAG: ${{ job.job }}
       ${{ if ne(parameters.tag, 'latest') }}:
         JOB_DOCKER_TAG: ${{ job.job }}-${{ parameters.tag }}
-        ${{ if eq(parameters.tag, 'latest') }}:
-          JOB_BUILD_ARGS: --build-arg FROM_IMAGE=$(DOCKER_HUB_USER)/${{ parameters.image }} --build-arg FROM_IMAGE_TAG=base
-        ${{ if ne(parameters.tag, 'latest') }}:
-          JOB_BUILD_ARGS: --build-arg FROM_IMAGE=$(DOCKER_HUB_USER)/${{ parameters.image }} --build-arg FROM_IMAGE_TAG=base-$(TAG)
+      ${{ if eq(parameters.tag, 'latest') }}:
+        JOB_BUILD_ARGS: --build-arg FROM_IMAGE=$(DOCKER_HUB_USER)/${{ parameters.image }} --build-arg FROM_IMAGE_TAG=base
+      ${{ if ne(parameters.tag, 'latest') }}:
+        JOB_BUILD_ARGS: --build-arg FROM_IMAGE=$(DOCKER_HUB_USER)/${{ parameters.image }} --build-arg FROM_IMAGE_TAG=base-$(TAG)
       
       
     steps:
